@@ -1,0 +1,422 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Command Shopping Assistant | AI Grocery & Smart Suggestions</title>
+  <meta name="description" content="Intelligent voice-activated shopping list manager with NLP voice commands, replenishment prediction, seasonal recommendations, smart substitutes, and catalog search.">
+  
+  <!-- Google Fonts: Outfit & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- Main Stylesheet -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="dark-theme">
+  <!-- Background Glow Accents -->
+  <div class="ambient-glow glow-1"></div>
+  <div class="ambient-glow glow-2"></div>
+
+  <!-- Header Navigation -->
+  <header class="app-header">
+    <div class="header-container">
+      <div class="brand-logo">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"/>
+            <line x1="12" y1="19" x2="12" y2="23"/>
+            <line x1="8" y1="23" x2="16" y2="23"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <h1>VoiceCart <span>AI</span></h1>
+          <p class="tagline">Smart Voice Shopping Assistant</p>
+        </div>
+      </div>
+
+      <!-- Quick Controls / Settings -->
+      <div class="header-controls">
+        <div class="language-select-wrapper">
+          <span class="lang-icon">🌐</span>
+          <select id="language-selector" class="custom-select" aria-label="Select Voice Language">
+            <option value="en-US">English (US)</option>
+            <option value="es-ES">Español (Spanish)</option>
+            <option value="fr-FR">Français (French)</option>
+            <option value="de-DE">Deutsch (German)</option>
+            <option value="hi-IN">हिन्दी (Hindi)</option>
+          </select>
+        </div>
+
+        <label class="voice-feedback-toggle-label" title="Toggle audio spoken response">
+          <input type="checkbox" id="voice-feedback-toggle" checked>
+          <span class="toggle-switch"></span>
+          <span class="toggle-text">Voice Reply</span>
+        </label>
+
+        <button id="toggle-voice-mode" class="btn btn-glow-purple" title="Switch to Hands-Free Voice Mode">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Hands-Free HUD
+        </button>
+
+        <button id="export-btn" class="btn btn-glass" title="Export or share shopping list">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/>
+            <polyline points="16 6 12 2 8 6"/>
+            <line x1="12" y1="2" x2="12" y2="15"/>
+          </svg>
+          Export
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Container -->
+  <main class="app-main-layout">
+    
+    <!-- TOP SECTION: Voice Assistant Hero & Speech Visualizer -->
+    <section class="voice-hero-card">
+      <div class="voice-hero-content">
+        <!-- Glowing Voice Orb & Live Visualizer -->
+        <div class="voice-orb-wrapper">
+          <div id="voice-assistant-orb" class="voice-orb">
+            <button id="mic-btn" class="mic-trigger-btn" aria-label="Start Voice Listening">
+              <svg id="mic-icon" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                <line x1="12" y1="19" x2="12" y2="23"></line>
+                <line x1="8" y1="23" x2="16" y2="23"></line>
+              </svg>
+            </button>
+            <div class="pulse-ring ring-1"></div>
+            <div class="pulse-ring ring-2"></div>
+            <div class="pulse-ring ring-3"></div>
+          </div>
+          <span id="mic-status" class="mic-status-label">Voice Assistant Idle (Click to Speak)</span>
+        </div>
+
+        <!-- Live Audio Waveform & Live Transcript Display -->
+        <div class="voice-feedback-area">
+          <div class="visualizer-container">
+            <canvas id="audio-visualizer" width="420" height="48"></canvas>
+          </div>
+
+          <div class="live-transcript-box">
+            <div class="transcript-header">
+              <span class="live-pill"><span class="dot"></span> SPEECH STREAM</span>
+              <span class="nlp-indicator">NLP v2.4 Active</span>
+            </div>
+            <div id="live-transcript-text" class="transcript-text">"Say something like 'Add 2 bottles of olive oil' or 'Find organic apples under $5'..."</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Command Simulator Bar (1-Click Test Chips) -->
+      <div class="quick-commands-bar">
+        <div class="quick-commands-label">
+          <span class="sparkle-icon">⚡</span> Try Voice Command:
+        </div>
+        <div class="command-chips-scroll">
+          <button class="test-command-chip" data-command="Add 2 bottles of olive oil">"Add 2 bottles of olive oil"</button>
+          <button class="test-command-chip" data-command="I need 3 organic avocados">"I need 3 organic avocados"</button>
+          <button class="test-command-chip" data-command="Find toothpaste under $5">"Find toothpaste under $5"</button>
+          <button class="test-command-chip" data-command="What can I substitute for almond milk?">"Substitute for almond milk?"</button>
+          <button class="test-command-chip" data-command="Show seasonal recommendations">"Show seasonal picks"</button>
+          <button class="test-command-chip" data-command="Agrega 2 litros de leche" title="Spanish command">"Agrega 2 litros de leche" (ES)</button>
+          <button class="test-command-chip" data-command="Remove avocados from my list">"Remove avocados"</button>
+          <button class="test-command-chip" data-command="Mark bread as done">"Mark bread as done"</button>
+        </div>
+      </div>
+
+      <!-- Text Fallback Input for Non-Mic Testing -->
+      <div class="manual-input-strip">
+        <input type="text" id="manual-command-input" placeholder="Type a natural language voice command (e.g., 'Buy 5 bananas and 1 carton eggs')...">
+        <button id="manual-submit-btn" class="btn btn-primary">Run NLP</button>
+      </div>
+    </section>
+
+    <!-- TAB NAVIGATION: Shopping List / Catalog Search / Smart Suggestions -->
+    <div class="navigation-tabs-bar">
+      <button class="nav-tab-btn active" data-tab="shopping-list">
+        <span class="tab-icon">🛒</span>
+        <span>My Shopping List</span>
+      </button>
+      <button class="nav-tab-btn" data-tab="catalog">
+        <span class="tab-icon">🔍</span>
+        <span>Voice Catalog & Search</span>
+      </button>
+      <button class="nav-tab-btn" data-tab="suggestions">
+        <span class="tab-icon">💡</span>
+        <span>Smart Suggestions</span>
+      </button>
+    </div>
+
+    <!-- TAB 1: SHOPPING LIST PANEL -->
+    <section id="panel-shopping-list" class="tab-content-panel active">
+      <div class="shopping-layout-grid">
+        
+        <!-- Left: Categorized Shopping List Items -->
+        <div class="shopping-list-column">
+          <div class="list-actions-bar">
+            <div class="list-heading-group">
+              <h2>Active Cart Items</h2>
+              <span id="total-items-count" class="items-badge">0 items</span>
+            </div>
+            <div class="list-btn-group">
+              <button id="clear-completed-btn" class="btn-text">Clear Checked</button>
+              <button id="clear-all-btn" class="btn-text text-danger">Empty List</button>
+            </div>
+          </div>
+
+          <!-- Dynamic Container for Category Group Cards -->
+          <div id="shopping-list-container" class="category-cards-container">
+            <!-- Populated via store.js -->
+          </div>
+
+          <!-- Empty State -->
+          <div id="empty-list-state" class="empty-state-card hidden">
+            <div class="empty-icon">🛒</div>
+            <h3>Your Shopping List is Empty</h3>
+            <p>Click the microphone and say <strong>"Add bananas"</strong> or <strong>"I need almond milk"</strong> to get started!</p>
+          </div>
+        </div>
+
+        <!-- Right: Summary, Budget Meter & Quick Suggestions Widget -->
+        <div class="summary-sidebar-column">
+          <!-- Budget & Cart Total Card -->
+          <div class="glass-card summary-card">
+            <h3 class="card-title">Order Summary & Budget</h3>
+            
+            <div class="cost-breakdown">
+              <div class="cost-row">
+                <span>Estimated Subtotal</span>
+                <span id="total-cost" class="cost-highlight">$0.00</span>
+              </div>
+              <div class="cost-row text-muted">
+                <span>Estimated Tax (8%)</span>
+                <span>Included</span>
+              </div>
+            </div>
+
+            <!-- Budget Progress Meter -->
+            <div class="budget-meter-wrapper">
+              <div class="budget-header">
+                <span class="budget-label">Monthly Grocery Budget</span>
+                <span id="budget-remaining" class="budget-val text-success">$50.00 left</span>
+              </div>
+              <div class="progress-track">
+                <div id="budget-progress-bar" class="progress-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+
+            <div class="summary-actions">
+              <button class="btn btn-primary btn-block" onclick="document.getElementById('export-btn').click()">
+                Export Shopping List
+              </button>
+            </div>
+          </div>
+
+          <!-- Mini Smart Replenishment Alert Card -->
+          <div class="glass-card replenishment-alert-card">
+            <div class="card-badge-header">
+              <span class="alert-icon">⚡</span>
+              <h3>Predicted Low Stock</h3>
+            </div>
+            <p class="alert-desc">Based on your weekly replenishment cycle:</p>
+            <div id="replenishment-list" class="mini-suggestions-list">
+              <!-- Populated via suggestions.js -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: VOICE SEARCH & PRODUCT CATALOG PANEL -->
+    <section id="panel-catalog" class="tab-content-panel hidden">
+      <div class="catalog-view-wrapper">
+        
+        <!-- Search & Filter Controls -->
+        <div class="catalog-filters-card glass-card">
+          <div class="catalog-search-row">
+            <div class="search-input-wrapper">
+              <span class="search-icon">🔍</span>
+              <input type="text" id="catalog-search-input" placeholder="Search by name, brand, dietary tag (e.g. 'organic', 'gluten free')...">
+            </div>
+
+            <div class="filter-controls-group">
+              <select id="catalog-category-filter" class="custom-select">
+                <option value="All">All Categories</option>
+                <option value="Fresh Produce">Fresh Produce</option>
+                <option value="Dairy & Eggs">Dairy & Eggs</option>
+                <option value="Bakery">Bakery</option>
+                <option value="Pantry">Pantry & Grains</option>
+                <option value="Beverages">Beverages</option>
+                <option value="Snacks">Snacks & Nuts</option>
+                <option value="Frozen">Frozen Foods</option>
+                <option value="Household">Household & Care</option>
+              </select>
+
+              <div class="price-slider-group">
+                <label>Max Price: <span id="max-price-value" class="price-pill">Any Price</span></label>
+                <input type="range" id="max-price-slider" min="1" max="20" step="1" value="20">
+              </div>
+            </div>
+          </div>
+
+          <div class="voice-search-hint">
+            <span class="hint-icon">💡</span> Voice Search Tip: Say <em>"Find organic apples"</em> or <em>"Find snacks under $4"</em> to instantly filter items!
+          </div>
+        </div>
+
+        <!-- Product Grid -->
+        <div id="catalog-grid" class="catalog-grid">
+          <!-- Populated via catalog.js -->
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: SMART SUGGESTIONS HUB PANEL -->
+    <section id="panel-suggestions" class="tab-content-panel hidden">
+      <div class="suggestions-hub-wrapper">
+        
+        <!-- Seasonal & Deals Section -->
+        <div class="suggestions-section">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="section-icon">🌱</span>
+              <div>
+                <h3>Seasonal Picks & Fresh Arrivals</h3>
+                <p>Items currently in peak season with special value</p>
+              </div>
+            </div>
+          </div>
+          <div id="seasonal-list" class="suggestions-grid">
+            <!-- Populated via suggestions.js -->
+          </div>
+        </div>
+
+        <!-- Frequently Bought Together / Complementary Section -->
+        <div class="suggestions-section">
+          <div class="section-header">
+            <div class="section-title">
+              <span class="section-icon">🍳</span>
+              <div>
+                <h3>Smart Recipe & Basket Pairings</h3>
+                <p>Complementary items matching your current shopping list</p>
+              </div>
+            </div>
+          </div>
+          <div id="complementary-list" class="suggestions-grid">
+            <!-- Populated via suggestions.js -->
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- HANDS-FREE VOICE ONLY HUD (Fullscreen Modal) -->
+  <div id="voice-hud" class="voice-hud-overlay hidden">
+    <div class="voice-hud-container">
+      <button id="voice-hud-close" class="hud-close-btn" aria-label="Exit Hands-Free Mode">✕ Exit Hands-Free</button>
+      
+      <div class="hud-center-content">
+        <div class="hud-orb-large">
+          <div class="hud-ring ring-a"></div>
+          <div class="hud-ring ring-b"></div>
+          <div class="hud-icon">🎙️</div>
+        </div>
+
+        <h2 class="hud-title">Hands-Free Shopping Assistant</h2>
+        <p class="hud-subtitle">Listening continuously for your commands...</p>
+
+        <div class="hud-transcript-display">
+          <div id="voice-hud-transcript" class="hud-speech">"Listening for your command..."</div>
+        </div>
+
+        <div id="voice-hud-response" class="hud-response">Ready to assist. Say "Add apples" or "What are substitutes for milk?"</div>
+
+        <div class="hud-tips-strip">
+          <span>Try: "Add 2 gallons milk"</span>
+          <span>•</span>
+          <span>"Find snacks under $5"</span>
+          <span>•</span>
+          <span>"What is in season?"</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SMART SUBSTITUTE MODAL -->
+  <div id="substitute-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog glass-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon">✨</span>
+          <div>
+            <h3>Smart Substitutes & Alternatives</h3>
+            <p>Healthier, dietary, and in-stock swaps for <span id="substitute-original-item" class="highlight-target">Item</span></p>
+          </div>
+        </div>
+        <button id="substitute-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div id="substitute-results-grid" class="substitutes-grid">
+          <!-- Populated via suggestions.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EXPORT & SHARE MODAL -->
+  <div id="export-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog glass-modal">
+      <div class="modal-header">
+        <div class="modal-title-group">
+          <span class="modal-icon">📤</span>
+          <div>
+            <h3>Export & Share Shopping List</h3>
+            <p>Send to WhatsApp, copy formatted text, or print receipt</p>
+          </div>
+        </div>
+        <button id="export-modal-close" class="modal-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <textarea id="export-preview-text" class="export-textarea" rows="10" readonly></textarea>
+        
+        <div class="export-button-row">
+          <button id="export-copy-btn" class="btn btn-primary">
+            📋 Copy to Clipboard
+          </button>
+          <button id="export-whatsapp-btn" class="btn btn-whatsapp">
+            💬 Send via WhatsApp
+          </button>
+          <button id="export-print-btn" class="btn btn-glass">
+            🖨️ Print Receipt
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Script Imports (Order: Catalog -> NLP -> Suggestions -> Store -> Speech -> App) -->
+  <script src="js/catalog.js"></script>
+  <script src="js/nlp.js"></script>
+  <script src="js/suggestions.js"></script>
+  <script src="js/store.js"></script>
+  <script src="js/speech.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
