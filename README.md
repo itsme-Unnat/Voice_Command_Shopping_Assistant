@@ -5,6 +5,7 @@
 ![UI Theme](https://img.shields.io/badge/Theme-Obsidian%20Glassmorphism-10b981)
 ![Speech API](https://img.shields.io/badge/Voice-Web%20Speech%20API-06b6d4)
 ![NLP](https://img.shields.io/badge/NLP-Multilingual%20Parser-8b5cf6)
+![Vercel Ready](https://img.shields.io/badge/Deploy-Vercel%20Ready-000000)
 ![Persistence](https://img.shields.io/badge/Storage-LocalStorage-f59e0b)
 ![License](https://img.shields.io/badge/License-MIT-blue)
 
@@ -61,9 +62,15 @@
 
 ---
 
-## 🚀 Quick Start Guide
+## 🚀 Quick Start & Deployment Guide
 
-### Option 1: Direct In-Browser Launch (Zero Setup)
+### Option 1: 1-Click Deployment to Vercel (Production Cloud)
+This repository is configured with `vercel.json` and Vercel Python Serverless API functions:
+1. Log into [Vercel](https://vercel.com) and click **"Add New" $\rightarrow$ "Project"**.
+2. Select your GitHub repository: `itsme-Unnat/Voice_Command_Shopping_Assistant`.
+3. Click **Deploy**. Vercel will automatically configure both the static web client and serverless `/api` endpoints!
+
+### Option 2: Direct In-Browser Launch (Zero Setup)
 Simply open `index.html` in Google Chrome, Microsoft Edge, Brave, or any modern web browser:
 ```bash
 # On Windows
@@ -76,13 +83,13 @@ open index.html
 xdg-open index.html
 ```
 
-### Option 2: Run with Python Local Server
+### Option 3: Run with Python Local Server
 ```bash
 python -m http.server 8000
 # Open http://localhost:8000 in your browser
 ```
 
-### Option 3: Run with Python Backend Reference
+### Option 4: Run with Python Backend Reference
 ```bash
 cd backend
 python app.py
@@ -111,8 +118,12 @@ python app.py
 ## 🏗️ Project Architecture
 
 ```
-voice_command/
+Voice_Command_Shopping_Assistant/
 ├── index.html                 # Main Single Page Application UI
+├── vercel.json                # Vercel Serverless Routing Configuration
+├── requirements.txt           # Vercel Cloud Python Dependencies
+├── api/                       # Vercel Serverless Functions
+│   └── index.py               # Serverless Python API Handler
 ├── css/
 │   └── styles.css             # Glassmorphic Dark Design System & Animations
 ├── js/
@@ -122,9 +133,9 @@ voice_command/
 │   ├── catalog.js             # 100+ Mock Grocery Product Catalog & Search Service
 │   ├── suggestions.js         # Replenishment, Seasonal & Substitute Recommendation Engine
 │   └── store.js               # Reactive State Store & LocalStorage Persistence
-├── backend/                   # Python / Django Reference Implementation
+├── backend/                   # Standalone Python / Django Reference Implementation
 │   ├── requirements.txt       # Dependencies (django, gTTs, playsound, wit, gunicorn)
-│   ├── app.py                 # Lightweight API server & static host
+│   ├── app.py                 # Standalone API server & static host
 │   └── nlp_wit.py             # Wit.ai NLP & gTTS Speech engine module
 ├── README.md                  # Comprehensive Documentation
 └── SUBMISSION_WRITEUP.md      # 200-word Assessment Evaluation Write-up
@@ -136,19 +147,9 @@ voice_command/
 
 - **Frontend**: HTML5, Vanilla JavaScript (ES6+ Modules), Vanilla CSS3 (Custom Design System, Glassmorphism, CSS Grid & Flexbox).
 - **Speech Technologies**: Web Speech API (`SpeechRecognition`, `SpeechSynthesis`), Web Audio API (`AudioContext`, `AnalyserNode`).
+- **Serverless & Cloud**: Vercel Python Runtime (`BaseHTTPRequestHandler`), `vercel.json` rewrites.
 - **Data Persistence**: HTML5 `localStorage`.
 - **Backend Reference**: Python 3, Django / HTTP Server, Wit.ai, Google Text-to-Speech (`gTTS`).
-
----
-
-## 📋 Evaluation Criteria Alignment
-
-| Criteria | Implementation Highlights |
-| :--- | :--- |
-| **Problem-Solving Approach** | Multimodal NLP handling messy verbal input, quantity normalization, price boundaries, and replenishment cycles. |
-| **Code Quality** | Modular separation of concerns (`nlp.js`, `speech.js`, `suggestions.js`, `store.js`, `app.js`), fully documented and extensible. |
-| **Working Functionality** | End-to-end working voice recognition, TTS spoken feedback, dynamic catalog search, substitute engine, and export. |
-| **UI/UX Excellence** | Glowing voice assistant orb, real-time waveform visualizer, responsive layout, dark obsidian luxury theme, and dedicated hands-free HUD. |
 
 ---
 
